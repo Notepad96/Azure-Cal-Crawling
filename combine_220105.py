@@ -18,7 +18,7 @@ def check_exists_license():
 # WorkBook(Excel 파일) 생성
 wb = Workbook()
 ws = wb.active
-ws.title = 'VM-List'
+ws.title = 'Storage Accounts'
 
 # Webdriver 사용하여 접속
 option = webdriver.ChromeOptions()
@@ -49,21 +49,43 @@ sel_currency = Select(driver.find_element(By.XPATH, '//*[@class="select currency
 sel_currency.select_by_value(currency)
 
 # 지 역
-region = 'korea-central'
+list_region = ['korea-central', 'korea-south']
 sel_region = Select(driver.find_element(By.XPATH, '//*[@name="region"]'))
-sel_region.select_by_value(region)
+# sel_region.select_by_value(region)
 
-# OS
-list_operatingSystem = ['windows', 'linux']
-sel_operatingsystem = Select(driver.find_element(By.XPATH, '//*[@name="operatingSystem"]'))
-sel_operatingsystem.select_by_value("linux")
+# 타 입
+list_type = driver.find_elements(By.XPATH ,'//select[@name="type"]/option')
+sel_type = Select(driver.find_element(By.XPATH, '//*[@name="type"]'))
+# print("===================== Type =====================")
+# for typ in list_type:
+#     print(typ.get_attribute('value'))
+sel_ptype = Select(driver.find_element(By.XPATH, '//*[@name="performanceTier"]'))
+sel_redancy = Select(driver.find_element(By.XPATH, '//*[@name="redundancy"]'))
 
-# OS Type
-list_ostype = driver.find_elements(By.XPATH ,'//select[@name="type"]/option')
-sel_ostype = Select(driver.find_element(By.XPATH, '//*[@name="type"]'))
-for ot in list_ostype:
-    sel_ostype.select_by_value(ot.get_attribute('value'))
-    time.sleep(1)
+sel_count = Select(driver.find_element(By.XPATH, '//*[@name="count"]'))
+
+# 열 머릿글
+list_titles = ["REGION", "TYPE", "PERFORMANCE TIER", "STORAGE ACCOUNT TYPE", "ACCESS TIER", "REDUNDANCY", "PAYG(1GB)", "1Y-RI(1GB)", "3Y-RI(1GB)"]  # 9
+col_text = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")    # 26
+col_size = len(list_titles)
+for i in range(col_size):
+    ws[f'{col_text[i]}2'] = list_titles[i]
+
+index = 3
+for reg in list_region:
+    sel_region.select_by_value(reg)
+    sel_type.select_by_value("block-blob")
+
+
+
+wb.save("storage.xlsx")
+
+# # OS Type
+# list_ostype = driver.find_elements(By.XPATH ,'//select[@name="type"]/option')
+# sel_ostype = Select(driver.find_element(By.XPATH, '//*[@name="type"]'))
+# for ot in list_ostype:
+#     sel_ostype.select_by_value(ot.get_attribute('value'))
+#     time.sleep(1)
 
 # sel_tier = Select(driver.find_element_by_xpath('//*[@name="tier"]'))
 
